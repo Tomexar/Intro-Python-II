@@ -1,4 +1,7 @@
 from room import Room
+from player import Player
+from items import Item
+import sys
 
 # Declare all the rooms
 
@@ -33,6 +36,18 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+
+item = {
+    'sword': Item('sword', 'this is a sword'),
+    'lantern': Item('lantern', 'this is a lantern'),
+    'armor': Item('Armor',  'a set of chainmail armor')
+    }
+
+room['foyer'].items = [item['lantern']]
+
+room['overlook'].items = [item['sword']]
+
+room['treasure'].items = [item['armor']]
 #
 # Main
 #
@@ -49,3 +64,45 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+def newPlayer():
+    return Player(name = 'tommy', currentRoom = room['outside'])
+
+player = newPlayer()
+
+def checkMove(player):
+    print(f'{player.currentRoom}')
+
+    moves = player.move()
+
+    command = ''
+    action = ''
+
+    while command not in moves.keys():
+        command = input("Where do you want to go ")
+
+        if command == 'Q':
+            print('Exiting Game')
+            sys.exit()
+        
+        if command == 'B':
+            print('This is the backpack')
+
+        try:
+            if command =='N':
+                player.currentRoom = player.currentRoom.n_to
+            if command =='S':
+                player.currentRoom = player.currentRoom.s_to
+            if command =='E':
+                player.currentRoom = player.currentRoom.e_to
+            if command =='W':
+                player.currentRoom = player.currentRoom.w_to
+        except AttributeError:
+            print('this is a dead end')
+        return command
+
+player_move = None
+
+while player_move is not 'Q':
+    move_player = checkMove(player)
+            
